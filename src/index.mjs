@@ -1,29 +1,31 @@
+var _ = require('underscore');
+/**
+ * Respond with content from R2 Bucket
+ * @param {Request} request
+ */
 export default {
-  /**
-   * Respond with content from R2 Bucket
-   * @param {Request} request
-   */
-  async fetch(request, env, ctx) {
-    // This is just for GET Requests, static content, etca
+  async fetch(request, env) {
     if (request.method == "GET") {
-      let { pathname } = new URL(request.url);
-      // If the pathname ends with /, look for index.html
-      if (pathname.endsWith("/")) {
-        pathname += "index.html";
+      // const object = await env.MY_BUCKET.get(key);
+      const mylist = await env.MY_BUCKET.list();
+      const objects = Object.values(mylist.objects);
+      const o = new Object();
+      for (const [key, value] of Object.entries(objects)) {
+        o[key] = value.uploaded
       }
-      // Slice off the leading '/'
-      pathname = pathname.slice(1);
+      const maxProp = Object.entries(o)
+          .reduce((bestEntry, thisEntry) => thisEntry[1] > bestEntry[1] ? thisEntry : bestEntry)
+          [0];
 
-      // try matching from cache first
-      const cache = caches.default;
-      let response = await cache.match(request);
-      if (!response) {
-        // no cache match, try reading from R2
-        // we shouldn't need to try/catch here, but R2 seems to throw internal errrors right now when querying for a file that doesn't exist
-        const file = await env.R2_BUCKET.get(pathname);
+      let pathname = Object.values(objects)[maxProp].key
 
-        if (file === undefined || file === null) {
-          return new Response(
+
+      // no cache match, try reading from R2
+      // we shouldn't need to try/catch here, but R2 seems to throw internal errrors right now when querying for a file that doesn't exist
+      const file = await env.MY_BUCKET.get(pathname);
+
+      if (file === undefined || file === null) {
+        return new Response(
             JSON.stringify({
               success: false,
               error: "Object Not Found",
@@ -34,24 +36,23 @@ export default {
                 "content-type": "application/json",
               },
             }
-          );
-        }
-
-        response = new Response(file.body, {
-          headers: {
-            "cache-control": "public, max-age=604800",
-            "content-type": file.httpMetadata?.contentType,
-            etag: file.httpEtag,
-          },
-        });
-
-        // store in cache asynchronously, so to not hold up the request
-        ctx.waitUntil(cache.put(request, response.clone()));
+        );
       }
-      // return uploaded image, etc.
-      return response;
+
+
+      return new Response(file.body, {
+        headers: {
+          "cache-control": "public, max-age=604800",
+          "content-type": file.httpMetadata?.contentType,
+          etag: file.httpEtag,
+        },
+      });
+
+      // store in cache asynchronously, so to not hold up the request
+      // ctx.waitUntil(cache.put(request, response.clone()));
     }
-    // For any other http method, we just return a 404
-    return new Response(null, { status: 404 });
-  },
+
+  // For any other http method, we just return a 404
+  return new Response(null, {status: 404});
+  }
 };

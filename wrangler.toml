@@ -1,9 +1,9 @@
-name = "r2-static-asset-serve"
+name = "r2-list-items"
 type = "javascript"
 
-account_id = "6b9f7e0e1478562986a4db3cf9fcfac3"
+account_id = ACCOUNT_ID
 workers_dev = true
-compatibility_date = "2022-04-22"
+compatibility_date = "2023-02-26"
 
 [build.upload]
 format = "modules"
@@ -13,5 +13,5 @@ main = "./index.mjs"
 
 
 [[r2_buckets]]
-bucket_name = "bucket-test"
-binding = "R2_BUCKET"
+bucket_name = BUCKET
+binding = "MY_BUCKET"

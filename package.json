@@ -5,9 +5,12 @@
   "description": "Serves static assets from the cloudflare workers r2",
   "main": "index.js",
   "scripts": {
-		"dev": "npx miniflare --kv-persist -w",
-		"publish": "wrangler publish"
+    "dev": "npx miniflare --kv-persist -w",
+    "publish": "wrangler publish"
   },
   "author": "RealChaika <94197210+RealChaika@users.noreply.github.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "underscore": "^1.13.6"
+  }
 }

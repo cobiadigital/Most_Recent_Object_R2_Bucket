@@ -8,3 +8,7 @@ wasm-pack.log
 worker/
 node_modules/
 .cargo-ok
+/.dev.vars
+wrangler.toml
+.idea
+.DS_Store
