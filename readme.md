@@ -1,5 +1,6 @@
 Needs a wrangler.toml
-'''
+```
+{
 name = "r2-list-items"
 type = "javascript"
 
@@ -15,6 +16,7 @@ main = "./index.mjs"
 [[r2_buckets]]
 bucket_name = <bucket_name>
 binding = "MY_BUCKET"
+}
 '''
 
 run wrangler init .
