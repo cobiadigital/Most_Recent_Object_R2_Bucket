@@ -1,7 +1,7 @@
 name = "r2-list-items"
 type = "javascript"
 
-account_id = ACCOUNT_ID
+account_id = '245302718047bba4dfecc0817e7c92b1'
 workers_dev = true
 compatibility_date = "2023-02-26"
 
@@ -13,5 +13,5 @@ main = "./index.mjs"
 
 
 [[r2_buckets]]
-bucket_name = BUCKET
+bucket_name = "ecotoxmedia"
 binding = "MY_BUCKET"
